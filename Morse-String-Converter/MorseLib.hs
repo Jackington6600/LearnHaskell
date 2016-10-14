@@ -85,7 +85,8 @@ table = [(dit ++ dah, 'A'),
          (dah ++ dah ++ dit ++ dit ++ dit, '7'),
          (dah ++ dah ++ dah ++ dit ++ dit, '8'),
          (dah ++ dah ++ dah ++ dah ++ dit, '9'),
-         (dah ++ dah ++ dah ++ dah ++ dah, '0')]
+         (dah ++ dah ++ dah ++ dah ++ dah, '0'),
+         (mediumGap, ' ')]
 
 
 data MorseTree = Nil 
