@@ -1,6 +1,6 @@
 import MorseLib
 
---Encode a sentance to morse code
+-- Encode a sentance to morse code:
 encode s = codeText (words s)
 
 codeText [] = []
@@ -9,7 +9,7 @@ codeText (c:cs) = (codeWord c) ++ mediumGap ++ (codeText cs)
 codeWord [] = []
 codeWord (c:cs) = (codeSymbol c) ++ shortGap ++ (codeWord cs)
 
---Decode morse code to a sentance
+-- Decode morse code to a sentance:
 decode m = decode' m [] []
 
 decode' [] [] accum                                                          = accum
