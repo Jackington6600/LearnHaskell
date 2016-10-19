@@ -5,6 +5,7 @@
 frequency xs = frequency' xs []
 
 frequency' [] accum = accum
-frequency' (x:xs) accum = frequency' xs (insert x accum)
+frequency' (x:xs) accum = frequency' xs (insert [] x accum)
 
-insert x ((a,n):accum) where x == a = (a,n+1):accum
+insert pre x [] = pre ++ [(x,1)]
+insert pre x ((a,n):as) = if x == a then pre ++ (a,n+1):as else insert (pre ++ [(a,n)]) x as
