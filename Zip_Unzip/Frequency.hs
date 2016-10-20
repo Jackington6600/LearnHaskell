@@ -1,3 +1,5 @@
+module Frequency where
+
 -- Get the frequency of ASCII characters in a file.
 
 frequency xs = frequency' xs []
