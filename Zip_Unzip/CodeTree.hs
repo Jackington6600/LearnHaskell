@@ -2,7 +2,7 @@
 -- Get the frequency of ASCII characters in a file.
 frequency xs = frequency' xs []
 
-frequency&sort xs = quciksort (frequency' xs [])
+frequencysort xs = quicksort (frequency' xs [])
 
 -- frequency helper function to do the legwork.
 frequency' [] accum = accum
