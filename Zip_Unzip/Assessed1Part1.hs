@@ -19,13 +19,13 @@ instance Show Bit where
 {--- Decoding ---}
 -- Notice that this should work for types more general than Char (our c).
 -- Question:
--- decode :: Eq c => (Tree c, [Bit]) -> [c]
+decode :: (Tree a, [Bit]) -> [a]
 decode (tree, bits) = decodeAux (tree, bits) [] tree
 
 -- You may or may not wish to use a helper function as follows for
 -- decode (this function will not be marked, and you can leave it
 -- undefined if you don't use it):
--- decodeAux :: Eq c => Tree c -> Tree c -> [Bit] -> [c]
+decodeAux :: (Tree a, [Bit]) -> [a] -> Tree a -> [a]
 decodeAux ((Leaf c _), []) accum tree = accum ++ [c]
 decodeAux ((Leaf c _), bits) accum tree = decodeAux (tree, bits) (accum ++ [c]) tree
 decodeAux ((Branch (l) _ _), (Z:bits)) accum tree = decodeAux ((l), bits) accum tree
@@ -47,18 +47,22 @@ decodeAux ((Branch _ (r) _), (I:bits)) accum tree = decodeAux ((r), bits) accum 
 
 -}
 
--- decompress :: String -> String
-decompress string = decompressHelper (stringToTraverse string) 
-                                            (fst (getIntToTraverse string ([],0))) [] [] 0
+decompress :: String -> String
+decompress string = decompressHelper (stringToTraverse string) (fst (getIntToTraverse string ([],0))) [] [] 0
 
+
+getIntToTraverse :: Num t => [Char] -> ([Char], t) -> (Int, t)
 getIntToTraverse (i:string) (intToTraverse, intLength)
-            | i == 'B'  = (read (intToTraverse) :: Int, intLength)
+            | i == 'B'  = (read (intToTraverse), intLength)
             | otherwise = getIntToTraverse string ((intToTraverse ++ [i]), (intLength + 1))
 
-stringToTraverse string = (drop (snd (getIntToTraverse string ([],0))) string)
+
+stringToTraverse :: [Char] -> [Char]
+stringToTraverse string = drop (snd (getIntToTraverse string ([],0))) string
 
 
-decompressHelper [] x tree bits counter = decode ((read tree :: Tree Char), bits)
+decompressHelper :: (Ord a, Num a) => [Char] -> a -> [Char] -> [Bit] -> a -> [Char]
+decompressHelper [] x tree bits counter = decode ((read tree), bits)
 decompressHelper (i:string) x tree bits counter = if counter < x then
                                                         decompressHelper string x (tree ++ [i]) bits (counter + 1)
                                                     else if i == '0' then
