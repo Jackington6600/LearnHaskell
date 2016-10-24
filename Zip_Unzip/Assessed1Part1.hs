@@ -65,9 +65,9 @@ decompressHelper :: (Ord a, Num a) => [Char] -> a -> [Char] -> [Bit] -> a -> [Ch
 decompressHelper [] x tree bits counter = decode ((read tree), bits)
 decompressHelper (i:string) x tree bits counter = if counter < x then
                                                         decompressHelper string x (tree ++ [i]) bits (counter + 1)
-                                                    else if i == '0' then
+                                                  else if i == '0' then
                                                         decompressHelper string x tree (bits ++ [Z]) (counter + 1)
-                                                    else
+                                                  else
                                                         decompressHelper string x tree (bits ++ [I]) (counter + 1)
                                                         
                                                     
@@ -92,7 +92,8 @@ memSize s = 8 * (length s)
 -- Smarter decompression, as discussed above. The input is either *
 -- followed by a string, or as in the original decompression function:
 decompress' :: String -> String
-decompress' = undefined
+decompress' (s:string) | s == '*'  = decompress string
+                       | otherwise = decompress (s:string)
 
 
 {--- Generate the frequency table ---}
