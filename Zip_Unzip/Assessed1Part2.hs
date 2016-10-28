@@ -115,11 +115,12 @@ mapSnd f (c,a) = (c, f a)
 -- Question:
 makeTree :: [Tree c] -> Tree c
 -- Collects a list of trees into an optimal prefix tree.
-makeTree = undefined
+makeTree (x:[]) = x
+makeTree (x:y:trees) = merge x y trees
 
 -- You may wish to use a helper function such as this:
 merge :: Tree c -> Tree c -> Tree c
-merge = undefined
+merge x y = makeTree ([Branch x y 1] ++ trees)
 
 -- Question:
 -- Generate a tree from list of Freqs (using makeTree above):
