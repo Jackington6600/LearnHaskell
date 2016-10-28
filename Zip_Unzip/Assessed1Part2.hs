@@ -112,17 +112,20 @@ mapSnd f (c,a) = (c, f a)
 
 -- Produce a Huffman tree from a list of Huffman trees.
 -- https://www.siggraph.org/education/materials/HyperGraph/video/mpeg/mpegfaq/huffman_tutorial.html
--- Question:
+-- TODO:
 makeTree :: [Tree c] -> Tree c
 -- Collects a list of trees into an optimal prefix tree.
+-- What is the list of trees? Format etc. See link?
+-- How should they be merged? bf df?
 makeTree (x:[]) = x
 makeTree (x:y:trees) = merge x y trees
 
 -- You may wish to use a helper function such as this:
+-- input: 2 trees return: 1 tree
 merge :: Tree c -> Tree c -> Tree c
 merge x y = makeTree ([Branch x y 1] ++ trees)
 
--- Question:
+-- TODO:
 -- Generate a tree from list of Freqs (using makeTree above):
 generateTree :: [Freq c] -> Tree c
 generateTree = undefined
@@ -134,29 +137,29 @@ type Key c = (c,[Bit])
 -- The whole coding table
 type CodingTable c = [Key c]
 
--- Question:
+-- TODO:
 -- Given a tree, generates a coding table
 makeTable :: Eq c => Tree c -> CodingTable c
 makeTable = undefined
 
--- Question:
+-- TODO:
 -- Takes a string of symbols to a bit string, based on a given coding table
 encodeUsingTable :: Eq c => CodingTable c -> [c] -> [Bit]
 encodeUsingTable = undefined
 
--- Question:
+-- TODO:
 -- Encodes directly from the tree (more efficient).
 encodeUsing :: Eq c => Tree c -> [c] -> [Bit]
 encodeUsing = undefined
 
--- Question:
+-- TODO:
 -- From a string of symbols, generate the coding tree and the encoding
 encode :: Eq c => [c] -> (Tree c, [Bit])
 encode = undefined
 
 -- Encoding trees
 
--- Question:
+-- TODO:
 -- Compressing a string. This should be the inverse of decompress.
 -- That is, this should output a string of the form
 --
@@ -169,7 +172,7 @@ encode = undefined
 compress :: String -> String
 compress = undefined
 
--- Question:
+-- TODO:
 -- Smarter compression: if the encoded string is larger than the input string,
 -- instead output the input string with a '*' in front.
 compress' :: String -> String
