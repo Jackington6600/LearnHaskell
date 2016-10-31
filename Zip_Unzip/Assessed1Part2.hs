@@ -112,22 +112,19 @@ mapSnd f (c,a) = (c, f a)
 
 -- Produce a Huffman tree from a list of Huffman trees.
 -- https://www.siggraph.org/education/materials/HyperGraph/video/mpeg/mpegfaq/huffman_tutorial.html
--- TODO:
+-- ToTest:
 makeTree :: [Tree c] -> Tree c
--- Collects a list of trees into an optimal prefix tree.
--- What is the list of trees? Format etc. See link?
--- How should they be merged? bf df?
 makeTree (x:[])      = x
 makeTree (x:y:trees) = makeTree ( insertTree (Branch x y (freq x + freq y)) trees )
 
 -- You may wish to use a helper function such as this:
--- input: 2 trees return: 1 tree
+-- ToTest:
 insertTree x (t:trees)
         | (freq x) <= (freq t) = (x:t:trees)
         | (freq x) >  (freq t) = [t] ++ (insertTree x trees)
 
--- TODO:
 -- Generate a tree from list of Freqs (using makeTree above):
+-- ToTest
 generateTree :: [Freq c] -> Tree c
 generateTree freqs = makeTree (map (leaf) freqs)
 
@@ -138,16 +135,16 @@ type Key c = (c,[Bit])
 -- The whole coding table
 type CodingTable c = [Key c]
 
--- TODO:
 -- Given a tree, generates a coding table
+-- ToTest:
 makeTable :: Eq c => Tree c -> CodingTable c
 makeTable tree = makeTable' tree []
 
 makeTable' (Leaf c _) accum = (c, accum)
 makeTable' (Branch left right _) accum = makeTable' left (accum ++ Z) ++ makeTable' right (accum ++ I)
 
--- TODO:
 -- Takes a string of symbols to a bit string, based on a given coding table
+-- ToTest
 encodeUsingTable :: Eq c => CodingTable c -> [c] -> [Bit]
 encodeUsingTable codeTable (s:string) = findinTable s codeTable ++ encodeUsingTable codeTable string
 
