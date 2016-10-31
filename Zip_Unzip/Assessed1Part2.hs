@@ -117,18 +117,19 @@ makeTree :: [Tree c] -> Tree c
 -- Collects a list of trees into an optimal prefix tree.
 -- What is the list of trees? Format etc. See link?
 -- How should they be merged? bf df?
-makeTree (x:[]) = x
-makeTree (x:y:trees) = merge x y trees
+makeTree (x:[])      = x
+makeTree (x:y:trees) = makeTree ( insertTree (Branch x y (freq x + freq y)) trees )
 
 -- You may wish to use a helper function such as this:
 -- input: 2 trees return: 1 tree
-merge :: Tree c -> Tree c -> Tree c
-merge x y = makeTree ([Branch x y 1] ++ trees)
+insertTree x (t:trees)
+        | (freq x) <= (freq t) = (x:t:trees)
+        | (freq x) >  (freq t) = [t] ++ (insertTree x trees)
 
 -- TODO:
 -- Generate a tree from list of Freqs (using makeTree above):
 generateTree :: [Freq c] -> Tree c
-generateTree = undefined
+generateTree freqs = makeTree (map (leaf) freqs)
 
 -- Encoding table.
 -- A key is a key-value pair (an entry in a map/table).
@@ -140,12 +141,19 @@ type CodingTable c = [Key c]
 -- TODO:
 -- Given a tree, generates a coding table
 makeTable :: Eq c => Tree c -> CodingTable c
-makeTable = undefined
+makeTable tree = makeTable' tree []
+
+makeTable' (Leaf c _) accum = (c, accum)
+makeTable' (Branch left right _) accum = makeTable' left (accum ++ Z) ++ makeTable' right (accum ++ I)
 
 -- TODO:
 -- Takes a string of symbols to a bit string, based on a given coding table
 encodeUsingTable :: Eq c => CodingTable c -> [c] -> [Bit]
-encodeUsingTable = undefined
+encodeUsingTable codeTable (s:string) = findinTable s codeTable ++ encodeUsingTable codeTable string
+
+findinTable s ((x, bits):codeTable) 
+        | s == x    = bits
+        | otherwise = findinTable s codeTable
 
 -- TODO:
 -- Encodes directly from the tree (more efficient).
