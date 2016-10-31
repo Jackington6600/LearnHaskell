@@ -153,7 +153,11 @@ findinTable s ((x, bits):codeTable) | s == x    = bits
 -- TODO:
 -- Encodes directly from the tree (more efficient).
 encodeUsing :: Eq c => Tree c -> [c] -> [Bit]
-encodeUsing = undefined
+encodeUsing tree [] = undefined
+encodeUsing tree (s:string) = undefined
+
+findinTree s (Leaf c _) = undefined
+findinTree s (Branch left right _) = undefined
 
 -- TODO:
 -- From a string of symbols, generate the coding tree and the encoding
