@@ -150,14 +150,14 @@ findinTable s []                    = error "Character not found"
 findinTable s ((x, bits):codeTable) | s == x    = bits
                                     | otherwise = findinTable s codeTable
 
--- TODO:
--- Encodes directly from the tree (more efficient).
+-- Encodes directly from the tree (more efficient?).
 encodeUsing :: Eq c => Tree c -> [c] -> [Bit]
-encodeUsing tree [] = undefined
-encodeUsing tree (s:string) = undefined
+encodeUsing tree []         = []
+encodeUsing tree (s:string) = (findinTree s tree []) ++ (encodeUsing tree string)
 
-findinTree s (Leaf c _) = undefined
-findinTree s (Branch left right _) = undefined
+findinTree s (Leaf c _) accum            | s == c = accum
+findinTree s (Leaf c _) accum            = []
+findinTree s (Branch left right _) accum = findinTree s left (accum ++ [Z]) ++ findinTree s right (accum ++ [I])
 
 -- TODO:
 -- From a string of symbols, generate the coding tree and the encoding
