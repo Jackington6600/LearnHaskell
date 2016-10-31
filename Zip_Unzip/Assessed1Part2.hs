@@ -112,19 +112,18 @@ mapSnd f (c,a) = (c, f a)
 
 -- Produce a Huffman tree from a list of Huffman trees.
 -- https://www.siggraph.org/education/materials/HyperGraph/video/mpeg/mpegfaq/huffman_tutorial.html
--- ToTest:
 makeTree :: [Tree c] -> Tree c
 makeTree (x:[])      = x
 makeTree (x:y:trees) = makeTree ( insertTree (Branch x y (freq x + freq y)) trees )
 
+testmakeTree = makeTree [Leaf 'a' 2, Leaf 'b' 4, Leaf 'c' 5]
+
 -- You may wish to use a helper function such as this:
--- ToTest:
-insertTree x (t:trees)
-        | (freq x) <= (freq t) = (x:t:trees)
-        | (freq x) >  (freq t) = [t] ++ (insertTree x trees)
+insertTree x []        = [x]
+insertTree x (t:trees) | (freq x) <= (freq t) = (x:t:trees)
+                       | otherwise            = [t] ++ (insertTree x trees)
 
 -- Generate a tree from list of Freqs (using makeTree above):
--- ToTest
 generateTree :: [Freq c] -> Tree c
 generateTree freqs = makeTree (map (leaf) freqs)
 
@@ -136,21 +135,20 @@ type Key c = (c,[Bit])
 type CodingTable c = [Key c]
 
 -- Given a tree, generates a coding table
--- ToTest:
 makeTable :: Eq c => Tree c -> CodingTable c
 makeTable tree = makeTable' tree []
 
-makeTable' (Leaf c _) accum = (c, accum)
-makeTable' (Branch left right _) accum = makeTable' left (accum ++ Z) ++ makeTable' right (accum ++ I)
+makeTable' (Leaf c _) accum = [(c, accum)]
+makeTable' (Branch left right _) accum = makeTable' left (accum ++ [Z]) ++ makeTable' right (accum ++ [I])
 
 -- Takes a string of symbols to a bit string, based on a given coding table
--- ToTest
 encodeUsingTable :: Eq c => CodingTable c -> [c] -> [Bit]
+encodeUsingTable codeTable []         = []
 encodeUsingTable codeTable (s:string) = findinTable s codeTable ++ encodeUsingTable codeTable string
 
-findinTable s ((x, bits):codeTable) 
-        | s == x    = bits
-        | otherwise = findinTable s codeTable
+findinTable s []                    = error "Character not found"
+findinTable s ((x, bits):codeTable) | s == x    = bits
+                                    | otherwise = findinTable s codeTable
 
 -- TODO:
 -- Encodes directly from the tree (more efficient).
