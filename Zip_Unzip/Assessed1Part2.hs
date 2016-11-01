@@ -165,7 +165,7 @@ findinTree s (Leaf c _) accum            | s == c = accum
 findinTree s (Leaf c _) accum            = []
 findinTree s (Branch left right _) accum = findinTree s left (accum ++ [Z]) ++ findinTree s right (accum ++ [I])
 
--- TODO:
+
 -- From a string of symbols, generate the coding tree and the encoding
 encode :: Eq c => [c] -> (Tree c, [Bit])
 encode string = (generateTree (tabulate string), encodeUsing (generateTree (tabulate string)) string)
@@ -183,7 +183,13 @@ encode string = (generateTree (tabulate string), encodeUsing (generateTree (tabu
 --    * t is read from a tree, and contains exactly n characters.
 --    * c is string of bits.
 compress :: String -> String
-compress = undefined
+-- compress string = length (read (fst (encode string))) ++ read (fst (encode string)) ++ read ( snd (encode string) )
+
+compress string = len ++ treeshow ++ bit
+    where (tree, bits) = encode string
+          len = show (length (show tree))
+          treeshow = show tree
+          bit = (showList bits) ""
 
 -- TODO:
 -- Smarter compression: if the encoded string is larger than the input string,
