@@ -144,7 +144,7 @@ type CodingTable c = [Key c]
 makeTable :: Eq c => Tree c -> CodingTable c
 makeTable tree = makeTable' tree []
 
-makeTable' (Leaf c _) accum = [(c, accum)]
+makeTable' (Leaf c _) accum            = [(c, accum)]
 makeTable' (Branch left right _) accum = makeTable' left (accum ++ [Z]) ++ makeTable' right (accum ++ [I])
 
 -- Takes a string of symbols to a bit string, based on a given coding table
@@ -172,7 +172,6 @@ encode string = (generateTree (tabulate string), encodeUsing (generateTree (tabu
 
 -- Encoding trees
 
--- TODO:
 -- Compressing a string. This should be the inverse of decompress.
 -- That is, this should output a string of the form
 --
@@ -183,19 +182,26 @@ encode string = (generateTree (tabulate string), encodeUsing (generateTree (tabu
 --    * t is read from a tree, and contains exactly n characters.
 --    * c is string of bits.
 compress :: String -> String
--- compress string = length (read (fst (encode string))) ++ read (fst (encode string)) ++ read ( snd (encode string) )
-
 compress string = len ++ treeshow ++ bit
     where (tree, bits) = encode string
-          len = show (length (show tree))
-          treeshow = show tree
-          bit = (showList bits) ""
+          len          = show (length (show tree))
+          treeshow     = show tree
+          bit          = (showList bits) ""
 
--- TODO:
 -- Smarter compression: if the encoded string is larger than the input string,
 -- instead output the input string with a '*' in front.
 compress' :: String -> String
-compress' = undefined
+compress' string = co
+    where (tree, bits)   = encode string
+          len            = show (length (show tree))
+          treeshow       = show tree
+          bit            = (showList bits) ""
+          sizeCompressed = (memSize len) + (memSize treeshow) + (length bit)
+          size           = memSize string
+          co             = if size > sizeCompressed then
+                            len ++ treeshow ++ bit
+                         else
+                            "*" ++ string
 
 
 
