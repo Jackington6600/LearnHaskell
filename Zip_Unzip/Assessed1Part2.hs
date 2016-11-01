@@ -12,6 +12,12 @@ data Tree c = Leaf c Int | Branch (Tree c) (Tree c) Int
 data Bit = Z | I
     deriving (Eq, Ord)
 
+instance Show Bit where
+    show Z = "0"
+    show I = "1"
+    showList [] = id
+    showList (x:xs) = \out -> (show x) ++ showList xs out
+
 readBit :: Char -> Bit
 readBit '0' = Z
 readBit '1' = I
@@ -86,7 +92,7 @@ freq (Branch _ _ i) = i
 
 -- Generates a frequency table. 
 tabulate :: Eq c => [c] -> [Freq c]
-tabulate = foldr update []
+tabulate string = quicksort (foldr update [] string)
 
 -- Removes the existing entry for c (if it exists), updates it, and
 -- then reinserts it if no entry exists, we start over at 0, and then
@@ -162,7 +168,7 @@ findinTree s (Branch left right _) accum = findinTree s left (accum ++ [Z]) ++ f
 -- TODO:
 -- From a string of symbols, generate the coding tree and the encoding
 encode :: Eq c => [c] -> (Tree c, [Bit])
-encode = undefined
+encode string = (generateTree (tabulate string), encodeUsing (generateTree (tabulate string)) string)
 
 -- Encoding trees
 
@@ -184,3 +190,9 @@ compress = undefined
 -- instead output the input string with a '*' in front.
 compress' :: String -> String
 compress' = undefined
+
+
+
+-- Basic quicksort algorithm to put the list of pairs in descending order.
+quicksort []         = []
+quicksort ((x,y):xs) = quicksort [(a,b) | (a,b) <- xs, b <= y] ++ [(x,y)] ++ quicksort [(a,b) | (a,b) <- xs, b > y]
